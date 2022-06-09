@@ -16,7 +16,7 @@ RUN   if [ "$TARGETPLATFORM" = "linux/arm64" ]; then ARCHITECTURE=arm64; \
     && apt-get update \
     && apt-get -y upgrade \
     && apt-get -y install --no-install-recommends \
-        build-essential \
+        build-essential git-lfs \
         fontconfig dnsutils iputils-ping file \
         python3-venv python3-pip python3-dev \
         pandoc texlive \
