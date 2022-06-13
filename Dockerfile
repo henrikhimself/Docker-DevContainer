@@ -20,6 +20,7 @@ RUN   if [ "$TARGETPLATFORM" = "linux/arm64" ]; then ARCHITECTURE=arm64; \
         fontconfig dnsutils iputils-ping file \
         python3-venv python3-pip python3-dev \
         pandoc texlive \
+        sqlite3 \
     && mkdir -p ${DOTNET_ROOT} \
     && if [ $ARCHITECTURE = "arm64" ]; then \
         curl -o /tmp/dotnet-sdk.tar.gz -L https://download.visualstudio.microsoft.com/download/pr/7c62b503-4ede-4ff2-bc38-50f250a86d89/3b5e9db04cbe0169e852cb050a0dffce/dotnet-sdk-6.0.300-linux-arm64.tar.gz; \
