@@ -9,22 +9,25 @@ ENV POWERSHELL_ROOT=/opt/powershell
 ENV VIRTUAL_ENV=/opt/venv
 ENV PATH="${VIRTUAL_ENV}/bin:${DOTNET_ROOT}:${POWERSHELL_ROOT}:${PATH}"
 
-RUN   if [ "$TARGETPLATFORM" = "linux/arm64" ]; then ARCHITECTURE=arm64; \
-    elif [ "$TARGETPLATFORM" = "linux/amd64" ]; then ARCHITECTURE=amd64; \
-    fi \
-    && export DEBIAN_FRONTEND=noninteractive \
+RUN export DEBIAN_FRONTEND=noninteractive \
     && apt-get update \
     && apt-get -y upgrade \
     && apt-get -y install --no-install-recommends \
-        build-essential git-lfs \
+        ca-certificates curl gnupg lsb-release build-essential \
+    && curl -fsSL https://download.docker.com/linux/ubuntu/gpg | gpg --dearmor -o /etc/apt/keyrings/docker.gpg \
+    && echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | tee /etc/apt/sources.list.d/docker.list > /dev/null \
+    && apt-get update \
+    && apt-get -y install --no-install-recommends \
+        git-lfs sqlite3 \
         fontconfig dnsutils iputils-ping file \
         python3-venv python3-pip python3-dev \
+        docker-ce-cli docker-compose-plugin \
         pandoc texlive \
-        sqlite3 \
+    && groupadd docker \
     && mkdir -p ${DOTNET_ROOT} \
-    && if [ $ARCHITECTURE = "arm64" ]; then \
+    && if [ $TARGETPLATFORM = "linux/arm64" ]; then \
         curl -o /tmp/dotnet-sdk.tar.gz -L https://download.visualstudio.microsoft.com/download/pr/7c62b503-4ede-4ff2-bc38-50f250a86d89/3b5e9db04cbe0169e852cb050a0dffce/dotnet-sdk-6.0.300-linux-arm64.tar.gz; \
-    elif [ $ARCHITECTURE = "amd64" ]; then \
+    elif [ $TARGETPLATFORM = "linux/amd64" ]; then \
         curl -o /tmp/dotnet-sdk.tar.gz -L https://download.visualstudio.microsoft.com/download/pr/dc930bff-ef3d-4f6f-8799-6eb60390f5b4/1efee2a8ea0180c94aff8f15eb3af981/dotnet-sdk-6.0.300-linux-x64.tar.gz; \
     fi \ 
     && tar xf /tmp/dotnet-sdk.tar.gz -C ${DOTNET_ROOT} \
