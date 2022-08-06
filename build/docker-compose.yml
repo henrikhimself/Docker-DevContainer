@@ -1,0 +1,18 @@
+services:
+  prod:
+    image: devcontainer:prod
+    build:
+      context: ..
+      dockerfile: Dockerfile
+
+  test:
+    image: devcontainer:test
+    build:
+      context: ..
+      dockerfile: ./build/Dockerfile.test
+
+  dev:
+    image: devcontainer:dev
+    build:
+      context: ..
+      dockerfile: ./build/Dockerfile.dev
